@@ -1,27 +1,24 @@
-import discord
-from discord.ext import commands
+from flask import Flask
+from random import choice
 
-# Zmienna intencje przechowuje uprawnienia bota
-intents = discord.Intents.default()
-# Włączanie uprawnienia do czytania wiadomości
-intents.message_content = True
-# Tworzenie bota w zmiennej klienta i przekazanie mu uprawnień
-bot = commands.Bot(command_prefix='$', intents=intents)
+app = Flask(__name__)
 
-@bot.event
-async def on_ready():
-    print(f'Zalogowaliśmy się jako {bot.user}')
+facts = [
+    "Większość osób cierpiących na uzależnienie technologiczne doświadcza silnego stresu, gdy znajdują się poza zasięgiem sieci lub nie mogą korzystać ze swoich urządzeń.",
+    "Według badania przeprowadzonego w 2018 roku ponad 50% osób w wieku od 18 do 34 lat uważa się za zależne od swoich smartfonów.",
+    "Badanie zależności technologicznych jest jednym z najważniejszych obszarów współczesnych badań naukowych.",
+    "Według badania z 2019 r. ponad 60% osób odpowiada na wiadomości służbowe na swoich smartfonach w ciągu 15 minut po wyjściu z pracy.",
+    "Jednym ze sposobów walki z uzależnieniem od technologii jest poszukiwanie zajęć, które sprawiają przyjemność i poprawiają nastrój.",
+    "Elon Musk twierdzi, że sieci społecznościowe są zaprojektowane tak, aby trzymać nas na platformie, abyśmy spędzali jak najwięcej czasu na przeglądaniu treści.",
+    "Elon Musk opowiada się także za regulacją sieci społecznościowych i ochroną danych osobowych użytkowników. Twierdzi, że sieci społecznościowe gromadzą o nas ogromną ilość informacji, które następnie można wykorzystać do manipulowania naszymi myślami i zachowaniami."
+]
 
-@bot.command()
-async def hello(ctx):
-    await ctx.send("Cześć")
+@app.route("/")
+def hello_world():
+    return '<h1>Strona z losowymi faktami</h1><a href="/losowy_fakt">Zobacz losowy fakt!</a>'
 
-@bot.command()
-async def bye(ctx, id = 0):
-    await ctx.send(bot.get_emoji(id).name)
+@app.route("/losowy_fakt")
+def random_fact():
+    return f"<h1>Losowy fakt</h1><p>{choice(facts)}</p>"
 
-@bot.command()
-async def echo(ctx, messages):
-    await ctx.send(messages)
-
-bot.run("MTIzODgwMDY2NDI5Nzk5NjMwOA.GUi-jl.d1TDk2rodmQBiJTOf4obznKcTFNTfPPYzsONGA")
+app.run(debug=True)
