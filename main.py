@@ -1,29 +1,45 @@
+# Import
 from flask import Flask, render_template
-from random import choice
+
 
 app = Flask(__name__)
 
-facts = [
-    "Większość osób cierpiących na uzależnienie technologiczne doświadcza silnego stresu, gdy znajdują się poza zasięgiem sieci lub nie mogą korzystać ze swoich urządzeń.",
-    "Według badania przeprowadzonego w 2018 roku ponad 50% osób w wieku od 18 do 34 lat uważa się za zależne od swoich smartfonów.",
-    "Badanie zależności technologicznych jest jednym z najważniejszych obszarów współczesnych badań naukowych.",
-    "Według badania z 2019 r. ponad 60% osób odpowiada na wiadomości służbowe na swoich smartfonach w ciągu 15 minut po wyjściu z pracy.",
-    "Jednym ze sposobów walki z uzależnieniem od technologii jest poszukiwanie zajęć, które sprawiają przyjemność i poprawiają nastrój.",
-    "Elon Musk twierdzi, że sieci społecznościowe są zaprojektowane tak, aby trzymać nas na platformie, abyśmy spędzali jak najwięcej czasu na przeglądaniu treści.",
-    "Elon Musk opowiada się także za regulacją sieci społecznościowych i ochroną danych osobowych użytkowników. Twierdzi, że sieci społecznościowe gromadzą o nas ogromną ilość informacji, które następnie można wykorzystać do manipulowania naszymi myślami i zachowaniami."
-]
+def result_calculate(size, lights, device):
+# Zmienne umożliwiające obliczenie poboru energii przez urządzenia
+    home_coef = 100
+    light_coef = 0.04
+    devices_coef = 5   
+    return size * home_coef + lights * light_coef + device * devices_coef 
 
-@app.route("/")
-def hello_world():
-    napis = "To jest napis z pythona"
-    return render_template("index.html", text=napis)
+# Pierwsza strona
+@app.route('/')
+def index():
+    return render_template('index.html')
 
-@app.route("/<test>")
-def number_page(test):
-    return "Test " + test
+# Druga strona
+@app.route('/<size>')
+def lights(size):
+    return render_template(
+                            'lights.html', 
+                            size=size
+                           )
 
-@app.route("/losowy_fakt")
-def random_fact():
-    return f"<h1>Losowy fakt</h1><p>{choice(facts)}</p>"
+# Trzecia strona
+@app.route('/<size>/<lights>')
+def electronics(size, lights):
+    return render_template(
+                            'electronics.html',
+                            size = size, 
+                            lights = lights                           
+                           )
 
+# Obliczenia
+@app.route('/<size>/<lights>/<device>')
+def end(size, lights, device):
+    return render_template('end.html', 
+                            result=result_calculate(int(size),
+                                                    int(lights), 
+                                                    int(device)
+                                                    )
+                        )
 app.run(debug=True)
