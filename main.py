@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from random import choice
 
 app = Flask(__name__)
@@ -15,7 +15,7 @@ facts = [
 
 @app.route("/")
 def hello_world():
-    return '<h1>Strona z losowymi faktami</h1><a href="/losowy_fakt">Zobacz losowy fakt!</a>'
+    return render_template("index.html")
 
 @app.route("/losowy_fakt")
 def random_fact():
